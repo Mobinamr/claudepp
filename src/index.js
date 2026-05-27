@@ -4,12 +4,13 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const { getConfig } = require('./config');
 const { startSimpleMonitor, recordActivity } = require('./monitor/simpleMonitor');
 const { initAuth } = require('./auth/authManager');
 const { VideoPopupManager } = require('./video/videoPopup');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const config = getConfig();
 
 // Middleware
 app.use(express.json());
@@ -18,7 +19,7 @@ app.use(express.static('public'));
 
 // Session configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'claude-focus-videos-secret',
+  secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false }
@@ -100,8 +101,9 @@ startSimpleMonitor({
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Claude Focus Videos running on http://localhost:${PORT}`);
+app.listen(config.port, () => {
+  console.log(`🚀 Claude Focus Videos running on ${config.baseUrl}`);
   console.log('👉 Open your browser and login to start');
   console.log('💡 Video popup will show automatically when you interact with the app');
+  console.log(`📍 Server running for user: ${config.username}`);
 });

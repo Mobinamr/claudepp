@@ -1,5 +1,6 @@
 const { exec } = require('child_process');
 const path = require('path');
+const { getConfig } = require('../config');
 
 class VideoPopupManager {
   constructor() {
@@ -7,6 +8,7 @@ class VideoPopupManager {
     this.currentVideoWindow = null;
     this.videoQueue = [];
     this.currentPlatform = 'demo';
+    this.config = getConfig();
   }
 
   async showVideo(platform = 'demo') {
@@ -35,7 +37,7 @@ class VideoPopupManager {
 
   launchVideoPlayer() {
     // Open video popup in a new browser window using AppleScript
-    const videoUrl = `http://localhost:3000/video-popup.html?platform=${this.currentPlatform}`;
+    const videoUrl = `${this.config.video.popupUrl}?platform=${this.currentPlatform}`;
 
     // AppleScript to open URL in a new, minimal browser window
     const script = `
