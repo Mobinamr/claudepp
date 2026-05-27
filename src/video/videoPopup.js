@@ -1,25 +1,27 @@
 const { exec } = require('child_process');
-const path = require('path');
 const { getConfig } = require('../config');
 
 class VideoPopupManager {
   constructor() {
     this.active = false;
     this.currentVideoWindow = null;
-    this.videoQueue = [];
-    this.currentPlatform = 'demo';
     this.config = getConfig();
+    this.videoUrls = [
+      'https://www.tiktok.com/foryou',
+      'https://www.youtube.com/shorts',
+      'https://www.instagram.com/reels'
+    ];
+    this.currentIndex = 0;
   }
 
-  async showVideo(platform = 'demo') {
+  async showVideo() {
     if (this.active) {
       console.log('Video already showing');
       return;
     }
 
     this.active = true;
-    this.currentPlatform = platform;
-    console.log(`🎥 Showing video popup for ${platform}`);
+    console.log('🎥 Opening video feed in browser');
 
     this.launchVideoPlayer();
   }
@@ -30,44 +32,46 @@ class VideoPopupManager {
     }
 
     this.active = false;
-    console.log('🚫 Hiding video popup');
+    console.log('🚫 Closing video browser');
 
     this.closeVideoPlayer();
   }
 
-  launchVideoPlayer() {
-    // Open video popup in a new browser window using AppleScript
-    const videoUrl = `${this.config.video.popupUrl}?platform=${this.currentPlatform}`;
+  getRandomVideoUrl() {
+    // Rotate through platforms or pick random
+    const url = this.videoUrls[this.currentIndex % this.videoUrls.length];
+    this.currentIndex++;
+    return url;
+  }
 
-    // AppleScript to open URL in a new, minimal browser window
+  launchVideoPlayer() {
+    const videoUrl = this.getRandomVideoUrl();
+    console.log(`📺 Opening: ${videoUrl}`);
+
+    // Open in default browser with AppleScript to control window size
     const script = `
       osascript -e 'tell application "Safari"
         activate
-        set windowBounds to {100, 100, 600, 900}
-        set newDoc to make new document
-        set URL of newDoc to "${videoUrl}"
-        set bounds of window 1 to windowBounds
+        make new document with properties {URL:"${videoUrl}"}
+        set bounds of window 1 to {100, 100, 600, 900}
       end tell'
     `;
 
     exec(script, (error, stdout, stderr) => {
       if (error) {
-        console.error('Error launching video player:', error);
-        // Fallback: try Chrome
+        console.log('Safari not available, trying Chrome...');
         this.launchWithChrome(videoUrl);
       } else {
         this.currentVideoWindow = 'safari';
-        console.log('✅ Video popup launched in Safari');
+        console.log('✅ Video feed opened in Safari');
       }
     });
   }
 
   launchWithChrome(videoUrl) {
-    // Fallback to Chrome if Safari fails
     const script = `
       osascript -e 'tell application "Google Chrome"
         activate
-        set windowBounds to {100, 100, 600, 900}
         make new window
         set URL of active tab of window 1 to "${videoUrl}"
       end tell'
@@ -75,17 +79,16 @@ class VideoPopupManager {
 
     exec(script, (error, stdout, stderr) => {
       if (error) {
-        console.error('Error launching with Chrome:', error);
-        // Last resort: use open command
+        console.log('Chrome not available, using default browser...');
         exec(`open "${videoUrl}"`, (err) => {
           if (!err) {
             this.currentVideoWindow = 'default';
-            console.log('✅ Video popup launched with default browser');
+            console.log('✅ Video feed opened in default browser');
           }
         });
       } else {
         this.currentVideoWindow = 'chrome';
-        console.log('✅ Video popup launched in Chrome');
+        console.log('✅ Video feed opened in Chrome');
       }
     });
   }
@@ -95,59 +98,16 @@ class VideoPopupManager {
       return;
     }
 
-    // Close the video window using AppleScript
-    let closeScript = '';
+    console.log('💡 Tip: Close the video browser window manually when done');
 
-    if (this.currentVideoWindow === 'safari') {
-      closeScript = `
-        osascript -e 'tell application "Safari"
-          set windowCount to count of windows
-          if windowCount > 0 then
-            set currentURL to URL of current tab of window 1
-            if currentURL contains "video-popup.html" then
-              close window 1
-            end if
-          end if
-        end tell'
-      `;
-    } else if (this.currentVideoWindow === 'chrome') {
-      closeScript = `
-        osascript -e 'tell application "Google Chrome"
-          set windowCount to count of windows
-          if windowCount > 0 then
-            close window 1
-          end if
-        end tell'
-      `;
-    }
-
-    if (closeScript) {
-      exec(closeScript, (error) => {
-        if (error) {
-          console.error('Error closing video window:', error);
-        } else {
-          console.log('✅ Video popup closed');
-        }
-      });
-    }
+    // We could close it automatically but that might close other tabs
+    // Better to let user close it themselves
 
     this.currentVideoWindow = null;
   }
 
   isActive() {
     return this.active;
-  }
-
-  setVideoSource(platform, videos) {
-    this.currentPlatform = platform;
-    this.videoQueue = videos;
-  }
-
-  getNextVideo() {
-    if (this.videoQueue.length === 0) {
-      return null;
-    }
-    return this.videoQueue.shift();
   }
 }
 

@@ -1,145 +1,107 @@
-# Claude Brainrot
+# Claude Brainrot 🧠
 
-> Show TikTok/Instagram Reels/YouTube Shorts while Claude Code is working on your prompts
+> Automatic TikTok/YouTube Shorts/Instagram Reels while Claude Code works
 
-A macOS app that automatically displays short-form videos when you're actively using Claude Code, helping you stay focused and entertained during long AI interactions.
+Ultra-simple app that opens short-form video feeds in your browser when you're actively using Claude Code. No login, no API keys, just entertainment.
 
-## What This Does
+## How It Works
 
-When you're working with Claude Code and it's processing your requests:
-- 🎥 A video popup automatically appears
-- 📺 Plays short videos in loop
-- ✨ Closes automatically when Claude needs your input
-- 🔄 Reopens when you start working again
+1. You start the app
+2. It monitors activity
+3. When you interact → TikTok/YouTube/Instagram opens in browser
+4. Watch videos while Claude processes your prompts
+5. Close when done
 
-## Quick Setup (2 steps)
+**That's it. No login, no configuration, no setup.**
 
-### Step 1: Download and Extract
-
-1. Download this repo as ZIP
-2. Extract it anywhere on your Mac
-3. Open Terminal and navigate to the folder:
-   ```bash
-   cd /path/to/extracted/folder
-   ```
-
-### Step 2: Start It Up
+## Quick Start
 
 ```bash
 npm install
 npm start
 ```
 
-That's it! Open http://localhost:3000 in your browser.
-
-## First Time Use
-
-1. **Login Page** will appear
-2. **Use Demo Mode** at the bottom (no setup needed!)
-3. Enter any username (e.g., "myusername")
-4. Choose a platform (TikTok/Instagram/YouTube)
-5. Click "Start Demo Mode"
-6. You're in!
-
-The video popup will show automatically when you interact with the dashboard.
+Open http://localhost:3000 and click "Test Video Popup"
 
 ## For Claude Code Users
 
-Want Claude to set this up for you? Just paste this in your next Claude Code prompt:
+Want Claude to set this up? Just say:
 
 ```
-Hey Claude, I downloaded "claude brainrot" from GitHub.
-It's in my Downloads folder as "claudepp-main.zip".
-Please extract it, install dependencies, and start the server for me.
-Then explain how to use it.
+Hey Claude, I want to use "Claude Brainrot" - setup the project for me.
+The files are in my current directory.
 ```
 
 Claude will:
-- ✅ Extract the files
-- ✅ Run `npm install`
+- ✅ Install dependencies
 - ✅ Start the server
-- ✅ Guide you through using it
+- ✅ Open it in your browser
 
-## How It Works
+## What Opens
 
-The app monitors your activity through HTTP requests. When you:
-- 🖱️ Refresh the dashboard
-- 📊 Check status updates
-- 🎮 Interact with the app
+The app rotates through:
+- 🎵 TikTok For You page
+- ▶️ YouTube Shorts feed
+- 📸 Instagram Reels
 
-It detects activity and shows videos. After 10 seconds of no activity, videos auto-close.
+No login needed - just browse like normal!
 
-## Customization (Optional)
+## Customization
 
-### Change Port
+Want different sites? Edit `src/video/videoPopup.js`:
 
-Create a `.env` file:
-```bash
-PORT=3001
-HOST=localhost
+```javascript
+this.videoUrls = [
+  'https://www.tiktok.com/foryou',
+  'https://www.youtube.com/shorts',
+  'https://your-favorite-site.com'
+];
 ```
 
-### OAuth Login (Advanced)
+## Requirements
 
-OAuth buttons are disabled by default. See [OAUTH_SETUP.md](OAUTH_SETUP.md) for instructions.
+- macOS (uses AppleScript)
+- Node.js 18+
+- A browser
 
-## Troubleshooting
+## How Activity Detection Works
 
-**Port already in use?**
-```bash
-# Use a different port
-PORT=3001 npm start
-```
+The app monitors HTTP requests. When you:
+- 🔄 Refresh the page
+- 🖱️ Click buttons
+- 📊 Make API calls
 
-**Can't see videos?**
-- Make sure you're logged in via demo mode
-- Check browser console for errors
-- Try clicking "Show Video Popup" manually
+It detects activity and opens videos. After 10 seconds idle, it considers you done.
 
-**Safari won't open?**
-The app tries: Safari → Chrome → Default Browser automatically.
+## Privacy
+
+- ✅ No data collection
+- ✅ No tracking
+- ✅ No external servers
+- ✅ Everything runs locally
+- ✅ No login/passwords needed
 
 ## Project Structure
 
 ```
 claudepp/
 ├── src/
-│   ├── index.js           # Main server
-│   ├── config.js          # Dynamic configuration
-│   ├── auth/              # Authentication
-│   ├── monitor/           # Activity tracking
-│   └── video/             # Video popup management
-├── public/
-│   ├── login.html         # Login interface
-│   ├── dashboard.html     # Main dashboard
-│   └── video-popup.html   # Video player
+│   ├── index.js              # Main server (all-in-one)
+│   ├── config.js             # Dynamic config
+│   ├── monitor/
+│   │   └── simpleMonitor.js  # Activity tracking
+│   └── video/
+│       └── videoPopup.js     # Browser opener
 └── package.json
 ```
 
-## Requirements
+## Why "Claude Brainrot"?
 
-- macOS (uses AppleScript for browser control)
-- Node.js 18 or higher
-- A browser (Safari/Chrome/Firefox)
-
-## Privacy & Security
-
-- ✅ No credentials stored
-- ✅ No data sent anywhere
-- ✅ Everything runs locally
-- ✅ `.env` files are gitignored
-- ✅ Demo mode needs no API keys
-
-## Contributing
-
-This is a fun side project! Feel free to:
-- Report bugs
-- Suggest features
-- Submit pull requests
+Because watching TikTok while Claude works is peak productivity. 😎
 
 ## License
 
-MIT
+MIT - Do whatever you want with it
 
 ---
 
