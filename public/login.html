@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Claude Focus Videos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #333;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .platform-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: white;
+    }
+
+    .platform-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-tiktok {
+      background: linear-gradient(135deg, #000000 0%, #ff0050 100%);
+    }
+
+    .btn-instagram {
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .btn-youtube {
+      background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .simple-login {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Claude Focus Videos</h1>
+    <p class="subtitle">Log in om video's te bekijken tijdens Claude's werk</p>
+
+    <div class="error" id="error"></div>
+
+    <div class="platform-buttons">
+      <a href="/auth/tiktok" class="platform-btn btn-tiktok">
+        <span>🎵</span> Login met TikTok
+      </a>
+      <a href="/auth/instagram" class="platform-btn btn-instagram">
+        <span>📸</span> Login met Instagram
+      </a>
+      <a href="/auth/youtube" class="platform-btn btn-youtube">
+        <span>▶️</span> Login met YouTube
+      </a>
+    </div>
+
+    <div class="divider">of gebruik demo mode</div>
+
+    <div class="simple-login">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="platform">Platform</label>
+          <select id="platform" name="platform" required>
+            <option value="">Kies een platform</option>
+            <option value="tiktok">TikTok</option>
+            <option value="instagram">Instagram</option>
+            <option value="youtube">YouTube</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="username">Gebruikersnaam</label>
+          <input type="text" id="username" name="username" placeholder="Je gebruikersnaam" required>
+        </div>
+        <button type="submit" class="submit-btn">Start Demo Mode</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const platform = document.getElementById('platform').value;
+      const username = document.getElementById('username').value;
+      const errorDiv = document.getElementById('error');
+
+      try {
+        const response = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ platform, username })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          window.location.href = '/';
+        } else {
+          errorDiv.textContent = data.error || 'Login failed';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        errorDiv.textContent = 'Connection error';
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
