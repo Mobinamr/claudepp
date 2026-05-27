@@ -50,6 +50,22 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Manual trigger routes for testing
+app.post('/api/video/show', (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  const platform = req.session.user.platform || 'demo';
+  videoManager.showVideo(platform);
+  res.json({ success: true, message: 'Video popup launched' });
+});
+
+app.post('/api/video/hide', (req, res) => {
+  videoManager.hideVideo();
+  res.json({ success: true, message: 'Video popup closed' });
+});
+
 // Start Claude Code monitor
 startClaudeMonitor({
   onActive: () => {
