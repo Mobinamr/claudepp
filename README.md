@@ -4,35 +4,42 @@ Een macOS applicatie die automatisch korte video's (TikTok/Instagram Reels/YouTu
 
 ## Features
 
-- 🎥 Automatische video popup tijdens Claude Code activiteit
-- 🔐 Login met social media accounts (TikTok/Instagram/YouTube)
-- 🎯 Focus op je werk - video's verdwijnen wanneer je input nodig is
-- 📊 Monitor Claude Code's activiteit via log files
-- ⚡ Native macOS integratie
+- Automatische video popup tijdens Claude Code activiteit
+- Demo mode login voor snelle testing
+- Focus op je werk - video's verdwijnen wanneer je input nodig is
+- Monitor Claude Code's activiteit via log files
+- Native macOS integratie
+- Modern dark UI met noisy grid design
+
+## Quick Start
+
+```bash
+npm install
+npm start
+```
+
+Open http://localhost:3000 en gebruik **demo mode** om in te loggen.
 
 ## Vereisten
 
 - macOS (gebruikt Swift/AppleScript voor systeemintegratie)
 - Node.js 18+
-- Claude Code geïnstalleerd
-
-## Installatie
-
-```bash
-npm install
-cp .env.example .env
-# Vul je API keys in .env in
-npm start
-```
+- Claude Code geïnstalleerd (optioneel voor monitoring)
 
 ## Gebruik
 
-1. Start de applicatie
-2. Log in met je social media account
-3. De applicatie monitort automatisch Claude Code
-4. Video's verschijnen tijdens Claude's werk
-5. Video's verdwijnen wanneer Claude klaar is of input nodig heeft
+1. Start de applicatie met `npm start`
+2. Open http://localhost:3000 in je browser
+3. Gebruik demo mode login (geen API keys nodig)
+4. Kies een platform (TikTok/Instagram/YouTube) en voer een username in
+5. Je komt op het dashboard
+
+## OAuth Login (Optioneel)
+
+OAuth login is standaard uitgeschakeld. Zie [OAUTH_SETUP.md](OAUTH_SETUP.md) voor instructies om OAuth in te schakelen.
+
+Voor de meeste gebruikers is demo mode voldoende.
 
 ## Configuratie
 
-Zie `.env.example` voor alle configuratie opties.
+Zie [SETUP.md](SETUP.md) voor gedetailleerde setup instructies.
