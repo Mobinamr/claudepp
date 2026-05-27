@@ -39,7 +39,8 @@ class ClaudeMonitor {
 
   start() {
     if (!this.logPath) {
-      console.error('❌ Cannot start monitoring without valid log path');
+      console.warn('⚠️  Running in demo mode - Claude Code monitoring disabled');
+      console.warn('💡 To enable monitoring, set CLAUDE_LOG_PATH in .env to your Claude Code logs directory');
       return;
     }
 
