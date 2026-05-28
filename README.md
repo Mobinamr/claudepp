@@ -8,9 +8,9 @@ Watch TikTok automatically while working with Claude Code! Simple command, no se
 
 1. Install once → run `claudetiktok` anytime
 2. TikTok opens in top-right corner
-3. Watch while Claude works
-4. After 3s idle → TikTok docks (waiting for you)
-5. New activity → TikTok restores (same video!)
+3. **Claude working** → TikTok visible (watch while Claude types!)
+4. **Claude waiting for your response** → TikTok docks after 3s (focus on responding!)
+5. **You send new message** → TikTok undocks (watch again!)
 
 **No login, no servers, 100% automatic**
 
@@ -77,9 +77,9 @@ claudetiktok
 🎵 Enjoy watching while Claude works!
 
 ⚡ Monitoring your Claude session...
-   • Active work → TikTok visible
-   • Waiting for response → TikTok docks after 3s
-   • New prompt → TikTok restores automatically
+   • Claude working → TikTok visible (watch while Claude works!)
+   • Claude waiting for you → TikTok docks (focus on responding)
+   • You send message → TikTok undocks (watch again!)
 
 Press Ctrl+C to stop
 ```

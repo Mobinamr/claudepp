@@ -71,15 +71,16 @@ function openWithChrome() {
 
 function startMonitoring() {
   console.log('\n⚡ Monitoring your Claude session...');
-  console.log('   • Active work → TikTok visible');
-  console.log('   • Waiting for response → TikTok docks after 3s');
-  console.log('   • New prompt → TikTok restores automatically\n');
+  console.log('   • Claude working → TikTok visible (watch while Claude works!)');
+  console.log('   • Claude waiting for you → TikTok docks (focus on responding)');
+  console.log('   • You send message → TikTok undocks (watch again!)\n');
   console.log('Press Ctrl+C to stop\n');
 
-  // Simple activity monitoring
-  let lastActivity = Date.now();
+  // Monitor Claude Code activity
+  let lastClaudeActivity = Date.now();
   let isMinimized = false;
   let browserType = null;
+  let claudeIsWorking = true; // Start with TikTok visible
 
   // Detect browser type
   exec("pgrep -f Safari", (err, stdout) => {
@@ -91,28 +92,37 @@ function startMonitoring() {
     }
   });
 
-  // Check for activity every second
+  // Monitor Claude Code process activity
   const monitorInterval = setInterval(() => {
-    const timeSinceActivity = Date.now() - lastActivity;
+    // Check if Claude Code is actively processing (using CPU)
+    exec("ps aux | grep 'Claude Code' | grep -v grep | awk '{print $3}'", (err, stdout) => {
+      if (err) return;
 
-    // After 3 seconds of idle, dock TikTok
-    if (timeSinceActivity > 3000 && !isMinimized && browserType) {
-      console.log('⏸️  Idle detected - docking TikTok (waiting for your response)');
-      minimizeWindow(browserType);
-      isMinimized = true;
-    }
+      const cpuUsage = parseFloat(stdout.trim());
+
+      // If Claude is using CPU (working), show TikTok
+      if (cpuUsage > 0.5) {
+        lastClaudeActivity = Date.now();
+
+        if (isMinimized && browserType) {
+          console.log('💫 Claude is working - undocking TikTok (watch while Claude works!)');
+          restoreWindow(browserType);
+          isMinimized = false;
+          claudeIsWorking = true;
+        }
+      } else {
+        // If idle for 3 seconds, dock TikTok (Claude waiting for user)
+        const timeSinceActivity = Date.now() - lastClaudeActivity;
+
+        if (timeSinceActivity > 3000 && !isMinimized && browserType && claudeIsWorking) {
+          console.log('⏸️  Claude waiting - docking TikTok (focus on responding!)');
+          minimizeWindow(browserType);
+          isMinimized = true;
+          claudeIsWorking = false;
+        }
+      }
+    });
   }, 1000);
-
-  // Listen for stdin to detect new activity
-  process.stdin.on('data', () => {
-    lastActivity = Date.now();
-
-    if (isMinimized && browserType) {
-      console.log('💫 New activity - restoring TikTok');
-      restoreWindow(browserType);
-      isMinimized = false;
-    }
-  });
 
   // Cleanup on exit
   process.on('SIGINT', () => {
