@@ -144,16 +144,12 @@ app.post('/api/video/hide', (req, res) => {
 // Start simple activity monitor
 startSimpleMonitor({
   onActive: () => {
-    console.log('💫 Activity detected - showing TikTok');
-    videoManager.showVideo();
+    console.log('💫 New activity - showing TikTok');
+    videoManager.showVideo(); // Opens first time OR restores from dock
   },
   onIdle: () => {
-    console.log('⏸️  Waiting for authorization - minimizing TikTok');
-    videoManager.hideVideo(); // Minimizes to dock
-  },
-  onComplete: () => {
-    console.log('🏁 Session complete - closing TikTok completely');
-    videoManager.closeVideo(); // Closes completely after 30s idle
+    console.log('⏸️  Idle (waiting for user) - docking TikTok');
+    videoManager.minimizeVideo(); // Dock to keep session alive
   }
 });
 

@@ -1,77 +1,77 @@
 # Claude Brainrot 🧠
 
-> Automatic TikTok/YouTube Shorts/Instagram Reels while Claude Code works
+> Automatic TikTok while Claude Code works - dock/undock system
 
-Ultra-simple app that opens short-form video feeds in your browser when you're actively using Claude Code. No login, no API keys, just entertainment.
+Watch TikTok automatically while working with Claude Code! The app docks TikTok when waiting for your response, and restores it when you send a new prompt. Keep watching the same video across your entire session!
 
 ## How It Works
 
 1. You start the app
-2. It monitors activity
-3. When you interact → TikTok/YouTube/Instagram opens in browser
-4. Watch videos while Claude processes your prompts
-5. Close when done
+2. Send a prompt to Claude → TikTok opens
+3. TikTok plays while Claude works
+4. After 3s idle → TikTok docks (waiting for you)
+5. Send new prompt → TikTok restores (same video!)
+6. Keep watching throughout your session
 
-**That's it. No login, no configuration, no setup.**
+**No login, no configuration, 100% automatic**
 
-## Quick Start
+## Installation (Any User)
 
 ```bash
+# Clone the repo
+git clone https://github.com/Mobinamr/claudepp.git
+cd claudepp
+
+# Install and run
 npm install
 npm start
 ```
 
-Open http://localhost:3000 and click "Test Video Popup"
+Then just use Claude Code normally - TikTok will appear automatically!
 
 ## For Claude Code Users
 
-Want Claude to set this up? Just say:
+Tell your Claude:
 
 ```
-Hey Claude, I want to use "Claude Brainrot" - setup the project for me.
-The files are in my current directory.
+I want TikTok while you work. Install from https://github.com/Mobinamr/claudepp.git
+and start it for me.
 ```
 
 Claude will:
+- ✅ Clone the repo
 - ✅ Install dependencies
 - ✅ Start the server
-- ✅ Open it in your browser
+- ✅ TikTok appears automatically when you work!
 
 ## What Opens
 
-The app rotates through:
-- 🎵 TikTok For You page
-- ▶️ YouTube Shorts feed
-- 📸 Instagram Reels
-
-No login needed - just browse like normal!
+- 🎵 TikTok For You page (no login needed!)
+- Opens in Safari/Chrome in top-right area
+- Docks automatically when waiting for your input
+- Restores when you send new prompts
 
 ## Customization
 
-Want different sites? Edit `src/video/videoPopup.js`:
+Want different video site? Edit `src/video/videoPopup.js`:
 
 ```javascript
-this.videoUrls = [
-  'https://www.tiktok.com/foryou',
-  'https://www.youtube.com/shorts',
-  'https://your-favorite-site.com'
-];
+this.tiktokUrl = 'https://www.youtube.com/shorts'; // or any site!
 ```
 
 ## Requirements
 
-- macOS (uses AppleScript)
+- macOS (uses AppleScript for window control)
 - Node.js 18+
-- A browser
+- Safari or Chrome
 
-## How Activity Detection Works
+## How It Works Technically
 
-The app monitors HTTP requests. When you:
-- 🔄 Refresh the page
-- 🖱️ Click buttons
-- 📊 Make API calls
-
-It detects activity and opens videos. After 10 seconds idle, it considers you done.
+The app monitors HTTP activity from Claude Code:
+- Detects when you send prompts → Shows TikTok
+- After 3s idle → Docks TikTok to tray
+- New prompt → Restores TikTok window
+- Same session continues throughout!
 
 ## Privacy
 

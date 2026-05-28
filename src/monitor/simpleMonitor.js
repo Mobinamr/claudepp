@@ -26,55 +26,32 @@ class SimpleActivityMonitor {
     const now = Date.now();
     const timeSinceLastActivity = now - this.lastActivityTime;
 
-    // If no activity for 10 seconds, mark as idle (minimize)
-    if (timeSinceLastActivity > 10000 && this.isActive) {
+    // If no activity for 3 seconds, dock TikTok (waiting for user response)
+    if (timeSinceLastActivity > 3000 && this.isActive) {
       this.setIdle();
-    }
-
-    // If idle for 30 seconds total, close completely
-    if (this.idleStartTime && (now - this.idleStartTime > 30000)) {
-      this.setComplete();
     }
   }
 
   // Call this whenever there's activity (API calls, etc.)
   recordActivity() {
     this.lastActivityTime = Date.now();
-    this.idleStartTime = null; // Reset idle timer when activity resumes
 
+    // If was idle (docked), restore TikTok
     if (!this.isActive) {
       this.setActive();
     }
-
-    // Reset the activity timeout
-    if (this.activityTimeout) {
-      clearTimeout(this.activityTimeout);
-    }
-
-    // Auto-idle after 10 seconds of no activity
-    this.activityTimeout = setTimeout(() => {
-      this.setIdle();
-    }, 10000);
   }
 
   setActive() {
     this.isActive = true;
-    this.idleStartTime = null;
-    console.log('🟢 Activity detected - setting active');
+    console.log('🟢 Activity detected - showing/restoring TikTok');
     this.callbacks.onActive?.();
   }
 
   setIdle() {
     this.isActive = false;
-    this.idleStartTime = Date.now(); // Start tracking idle duration
-    console.log('🔴 No activity - setting idle (minimizing)');
+    console.log('⏸️  Idle (3s) - docking TikTok');
     this.callbacks.onIdle?.();
-  }
-
-  setComplete() {
-    this.idleStartTime = null; // Reset
-    console.log('🏁 Session complete - closing TikTok');
-    this.callbacks.onComplete?.();
   }
 
   stop() {
