@@ -1,14 +1,17 @@
 {
-  "name": "claude-focus-videos",
+  "name": "claude-brainrot",
   "version": "1.0.0",
-  "description": "Show TikTok/Instagram Reels/YouTube Shorts while Claude Code is working",
+  "description": "Automatic TikTok while Claude Code works - just run 'claudetiktok'",
   "main": "src/index.js",
+  "bin": {
+    "claudetiktok": "./bin/claudetiktok.js"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "jest"
   },
-  "keywords": ["claude", "productivity", "focus", "videos"],
+  "keywords": ["claude", "tiktok", "productivity", "brainrot"],
   "author": "",
   "license": "MIT",
   "dependencies": {
